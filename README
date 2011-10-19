@@ -1,0 +1,9 @@
+# clj-youtube
+
+Get public and authenticated youtube feeds.
+
+## License
+
+Copyright (C) 2011 Joost Diepenmaat, Zeekat Softwareontwikkeling
+
+Distributed under the Eclipse Public License, the same as Clojure.
