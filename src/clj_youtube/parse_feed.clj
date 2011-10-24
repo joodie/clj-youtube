@@ -60,14 +60,11 @@ XML feed, if available, is in (:xml response)"
 
 (defn parse-feed
   "give a seq of video uploads from the feed content"
-  [content]
+  [xml]
   (map parse-entry
-       (-> (to-xml content)
-           :content
-           (get-tags :entry))))
+       (-> xml
+       :content
+       (get-tags :entry))))
 
-(defn parse-video-info
-  "Parse info for a single video"
-  
-  )
+
 
