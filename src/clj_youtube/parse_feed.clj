@@ -11,13 +11,20 @@
                 (.getBytes content)
                 content))))
 
+(defn xml-type?
+  "true if s is an xml content type."
+  [s]
+  (and (string? s)
+       (or (.startsWith s "text/xml")
+           (.startsWith s "application/atom+xml"))))
+
 (defn wrap-xml
   "parse response body using clojure.xml if status is OK.
 XML feed, if available, is in (:xml response)"
   [f]
   (fn [& args]
-    (let [resp (apply f args)]
-      (if (= 200 (:status resp))
+    (let [resp (apply f args)]      
+      (if (xml-type? (get (:headers resp) "content-type"))
         (assoc resp :xml (to-xml (:body resp)))
         resp))))
 
@@ -63,8 +70,16 @@ XML feed, if available, is in (:xml response)"
   [xml]
   (map parse-entry
        (-> xml
-       :content
-       (get-tags :entry))))
+           :content
+           (get-tags :entry))))
 
-
-
+(defn parse-upload-token
+  [xml]
+  {:url (-> xml
+            :content
+            (get-tag :url)
+            get-text)
+   :token (-> xml
+              :content
+              (get-tag :token)
+              get-text)})

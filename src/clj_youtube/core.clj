@@ -79,7 +79,8 @@
 (defn get-upload-token
   [developer-key token post-data]
   ((authenticated-request developer-key token)
-   {:request-method :get
+   {:request-method :post
+    :headers {"Content-Type" "application/atom+xml; charset=UTF-8"}
     :url urls/get-upload-token-url
     :body post-data}))
 
