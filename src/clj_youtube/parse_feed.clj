@@ -57,6 +57,14 @@ XML feed, if available, is in (:xml response)"
                     :content
                     (get-tag :content)
                     get-text)
+   :thumbnail (-> entry
+                  :content
+                  (get-tag :media:group)
+                  :content
+                  (get-tag :media:thumbnail)
+                  :attrs
+                  :url)
+   
    :link (-> (first (filter #(and (= "text/html" (-> % :attrs :type))
                                   (= "alternate" (-> % :attrs :rel)))
                             (-> entry
