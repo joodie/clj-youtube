@@ -1,4 +1,4 @@
-(defproject clj-youtube "0.1.3"
+(defproject clj-youtube "0.1.4"
   :description "Clojure interface for the youtube API"
   :dependencies [[org.clojure/clojure "1.2.1"]
                  [clj-authsub "0.1.5"]
