@@ -35,7 +35,7 @@ start. retuns nil if url isn't on youtube."
    (.startsWith code-or-url "http")
    (url-to-code code-or-url)
    
-   (re-matches #"^[a-zA-Z0-9\-]+$" code-or-url)
+   (re-matches #"^[a-zA-Z0-9\-_]+$" code-or-url)
    code-or-url))
 
 (defn embed-url
