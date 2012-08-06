@@ -8,6 +8,14 @@
   [name]
   (format "http://gdata.youtube.com/feeds/api/users/%s/uploads" name))
 
+
+(def current-user-favorites-url
+  "http://gdata.youtube.com/feeds/api/users/default/favorites")
+
+(defn public-favorites-url
+  [name]
+  (format "http://gdata.youtube.com/feeds/api/users/%s/favorites" name))
+
 (def get-upload-token-url
   "http://gdata.youtube.com/action/GetUploadToken")
 
@@ -31,6 +39,7 @@ start. retuns nil if url isn't on youtube."
 (defn to-code
   "Given a code or youtube url, give the video code or throw."
   [code-or-url]
+  {:pre [(string? code-or-url)]}
   (cond
    (.startsWith code-or-url "http")
    (url-to-code code-or-url)

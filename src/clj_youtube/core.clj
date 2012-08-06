@@ -32,6 +32,17 @@
      (public-request {:request-method :get
                       :url (urls/public-feed-url username)})))
 
+
+(defn get-favorites-feed
+  "Fetch the favorites for a user given by `token`. Or `user-name` Feed data is in :xml key of response if response status is 200 OK."
+  ([developer-key token]
+     ((authenticated-request developer-key token)
+                            {:request-method :get
+                             :url urls/current-user-favorites-url}))
+  ([username]
+     (public-request {:request-method :get
+                      :url (urls/public-favorites-url username)})))
+
 (defn get-video-info
   "Fetch info for a single video."
   [code]
