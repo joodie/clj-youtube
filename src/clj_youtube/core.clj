@@ -21,7 +21,6 @@
       authsub/wrap-gdata-version
       http/wrap-url))
 
-
 (defn get-upload-feed
   "Fetch the uploads for a channel given by `token`. Or `user-name` Feed data is in :xml key of response if response status is 200 OK."
   ([developer-key token]
@@ -32,7 +31,6 @@
      (public-request {:request-method :get
                       :url (urls/public-feed-url username)})))
 
-
 (defn get-favorites-feed
   "Fetch the favorites for a user given by `token`. Or `user-name` Feed data is in :xml key of response if response status is 200 OK."
   ([developer-key token]
@@ -42,6 +40,65 @@
   ([username]
      (public-request {:request-method :get
                       :url (urls/public-favorites-url username)})))
+
+(defn authenticate
+  [request developer-key token]
+  ((-> identity
+       (authsub/wrap-developer-key developer-key)
+       (authsub/wrap-token token)
+       authsub/wrap-host-fix
+       authsub/wrap-gdata-version) request))
+
+
+(defn paginate
+  [request start-index max-results]
+  (-> request
+      (assoc-in [:query-params :max-results] max-results)
+      (assoc-in [:query-params :start-index] start-index)))
+
+(defn unchunk [s]
+  (when (seq s)
+    (lazy-seq
+      (cons (first s)
+            (unchunk (next s))))))
+
+(defn paginate-seq
+  ([request start-index page-size]
+     (unchunk
+      (map
+       (fn [i]
+         (paginate request (+ start-index (* i page-size)) page-size))
+       (range))))
+  ([request start-index]
+     (paginate-seq request start-index 50))
+  ([request]
+     (paginate-seq request 0 50)))
+
+(defn lazy-pages
+  ([f request start-index]
+     (take-while #(= 200 (:status %))
+                 (map f (paginate-seq request start-index 50))))
+  ([f request]
+     (lazy-pages f request 1))
+  ([request]
+     (lazy-pages (-> http-core/request
+                    http/wrap-query-params
+                    parse/wrap-xml)
+                 request 1)))
+
+(defn lazy-feed
+  [base-request]
+  (mapcat identity (take-while seq (unchunk (map (comp parse/parse-feed :xml) (lazy-pages base-request))))))
+
+(defn request-from-url
+  ([method url]
+     (assoc (http/parse-url url)
+       :request-method method))
+  ([url]
+     (request-from-url :get url)))
+
+(def fetcher
+  (http/wrap-query-params http-core/request))
 
 (defn get-video-info
   "Fetch info for a single video."
