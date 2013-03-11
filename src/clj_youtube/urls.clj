@@ -8,7 +8,6 @@
   [name]
   (format "http://gdata.youtube.com/feeds/api/users/%s/uploads" name))
 
-
 (def current-user-favorites-url
   "http://gdata.youtube.com/feeds/api/users/default/favorites")
 
@@ -18,6 +17,9 @@
 
 (def get-upload-token-url
   "http://gdata.youtube.com/action/GetUploadToken")
+
+(def direct-upload-url
+  "http://uploads.gdata.youtube.com/feeds/api/users/default/uploads")
 
 (defn strip-youtube-hostname
   "Return path for youtube url - drops the host and http(s)

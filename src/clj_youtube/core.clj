@@ -152,4 +152,18 @@
     :url urls/get-upload-token-url
     :body post-data}))
 
+(defn direct-upload-request
+  [developer-key token xml-info mime-type filename video-data]
+  ((authenticated-request developer-key token)
+   {:request-method :post
+    :headers {"Slug" filename}
+    :url urls/direct-upload-url
+    :multipart [{:mime-type "application/atom+xml"
+                 :encoding  "UTF-8"
+                 :name "info"
+                 :content xml-info}
+                {:mime-type mime-type
+                 :name "video-upload.mp4"                 
+                 :content video-data}]}))
+
 
