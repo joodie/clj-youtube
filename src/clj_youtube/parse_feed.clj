@@ -91,3 +91,12 @@ XML feed, if available, is in (:xml response)"
               :content
               (get-tag :token)
               get-text)})
+
+(defn next-page-url
+  [xml]
+  (-> xml
+      :content
+      (get-tags :link)
+      (->> (filter #(= (get-in % [:attrs :rel]) "next")))
+      first
+      (get-in [:attrs :href])))
