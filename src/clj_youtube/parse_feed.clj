@@ -64,6 +64,14 @@ XML feed, if available, is in (:xml response)"
                   (get-tag :media:thumbnail)
                   :attrs
                   :url)
+
+   :comments (-> entry
+                 :content
+                 (get-tag :gd:comments)
+                 :content
+                 (get-tag :gd:feedLink)
+                 :attrs
+                 :href)
    
    :link (-> (first (filter #(and (= "text/html" (-> % :attrs :type))
                                   (= "alternate" (-> % :attrs :rel)))
@@ -71,7 +79,10 @@ XML feed, if available, is in (:xml response)"
                                 :content
                                 (get-tags :link))))
              :attrs
-             :href)})
+             :href)
+
+   :published (-> entry :content (get-tag :published) get-text)
+   :updated (-> entry :content (get-tag :updated) get-text)})
 
 (defn parse-feed
   "give a seq of video uploads from the feed content"
