@@ -4,10 +4,10 @@
             [clj-youtube.parse-feed :as parse]))
 
 (deftest test-get-public-feed
-  (let [feed (parse/parse-feed (:xml (youtube/get-upload-feed "zeekatcode")))]
+  (let [feed (parse/parse-feed (:xml (youtube/get-upload-feed "officialpsy")))]
     (is (seq feed))
     (let [entry (first feed)]
-      (is (= "zeekatcode" (:author entry)))
+      (is (= "officialpsy" (:author entry)))
       (let [link (:link (first feed))]
        (is (.startsWith link "http"))))))
 
